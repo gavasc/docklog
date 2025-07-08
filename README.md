@@ -13,13 +13,7 @@ Docklog watches all your running Docker containers and sends you a Telegram mess
 - 📦 Single binary, no dependencies
 
 ## Installation
-### Option 1: Homebrew (macOS)
-```bash
-brew tap gavasc/homebrew-taps
-brew install docklog
-```
-
-### Option 2: Download the binary
+### Download the binary
 Go to the releases page and download the binary for your operating system.
 Extract and install:
 ```bash

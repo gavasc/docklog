@@ -45,14 +45,6 @@ changelog:
       - "^docs:"
       - "^test:"
 
-brews:
-- name: docklog
-  homepage: https://github.com/gavasc/homebrew-taps
-  repository:
-    owner: gavasc
-    name: homebrew-taps
-    token: "{{ .Env.GITHUB_TOKEN}}"
-
 release:
   footer: >-
 
