@@ -15,7 +15,7 @@ Docklog watches all your running Docker containers and sends you a Telegram mess
 ## Installation
 ### Option 1: One-line install (Recommended)
 ```bash
-curl -fsSL https://raw.githubusercontent.com/yourusername/docklog/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/gavasc/docklog/main/install.sh | bash
 ```
 
 ### Option 2: Download the binary
