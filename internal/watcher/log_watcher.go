@@ -27,64 +27,61 @@ type LogEvent struct {
 }
 
 // starts the log watcher, receiving logs from watchContainers through the out channel
-func Start() error {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
-	log.Println("docklog: starting container watchers")
-
+// it also receives new containers to watch, from start and restart events
+func logWatcher(e <-chan Container, ctx context.Context) {
 	out := make(chan LogEvent)
 
-	err := watchContainers(ctx, out)
-	if err != nil {
-		log.Printf("failed to watch containers: %v", err)
-		return err
+	log.Println("starting container watchers")
+
+	// lists all running containers at startup
+	containers := listActiveContainers()
+	log.Printf("found %d containers\n", len(containers))
+	for _, container := range containers {
+		go watchContainerLogs(container, ctx, out)
 	}
 
 	for {
 		select {
 		case <-ctx.Done():
-			return nil
-		case e := <-out:
-			if filter.IsError(e.LogLine, e.SourceStream) {
-				notifier.Notify(e.ContainerName, e.TimeStamp, e.SourceStream, e.LogLine)
+			return
+		case ev := <-out:
+			if filter.IsErrorLog(ev.LogLine, ev.SourceStream) {
+				log.Printf("detected error in container [%s]: %s", ev.ContainerName, ev.LogLine)
+				notifier.NotifyTelegram(ev.ContainerName, ev.TimeStamp, ev.SourceStream, ev.LogLine)
 			}
+		// receives new containers to watch, from start and restart events
+		case container := <-e:
+			go watchContainerLogs(container, ctx, out)
 		}
 	}
 }
 
 // watches for logs from all running containers, spawning a goroutine for each
-func watchContainers(ctx context.Context, out chan<- LogEvent) error {
+func watchContainerLogs(container Container, ctx context.Context, out chan<- LogEvent) {
 	cli := getDockerClient()
 	defer cli.Close()
 
-	containers := listContainers()
-	log.Printf("docklog: found %d containers\n", len(containers))
-	for _, container := range containers {
-		go func(c Container) {
-			logs, err := cli.ContainerLogs(ctx, container.Id, containertypes.LogsOptions{
-				ShowStdout: true,
-				ShowStderr: true,
-				Follow:     true,
-				Since:      "0s",
-			})
-			log.Printf("docklog: watching container %s\n", c.Names[0])
-			if err != nil {
-				log.Printf("failed to get logs for container %s: %v", c.Id, err)
-				return
-			}
-
-			name := c.Names[0]
-
-			err = readDemuxedLogs(ctx, logs, c, out)
-			if err != nil {
-				log.Printf("failed to read logs for container %s: %v", name, err)
-			}
-			log.Printf("docklog: finished reading logs for container %s\n", name)
-		}(container)
+	logs, err := cli.ContainerLogs(ctx, container.Id, containertypes.LogsOptions{
+		ShowStdout: true,
+		ShowStderr: true,
+		Follow:     true,
+		Since:      "0s",
+	})
+	log.Printf("watching container [%s]\n", container.Names[0])
+	if err != nil {
+		log.Printf("failed to get logs for container [%s]: %v", container.Id, err)
+		return
 	}
 
-	return nil
+	name := container.Names[0]
+
+	err = readDemuxedLogs(ctx, logs, container, out)
+	if err != nil {
+		log.Printf("failed to read logs for container [%s]: %v", name, err)
+	}
+
+	log.Printf("finished reading logs for container [%s]", name)
+
 }
 
 // reads logs from a multiplexed stream, demultiplexing stdout and stderr and returning them as LogEvents
@@ -109,7 +106,7 @@ func readDemuxedLogs(ctx context.Context, stream io.Reader, container Container,
 				continue
 			}
 
-			streamType := getStreamType(header[0])
+			streamType := getLogStreamType(header[0])
 			payload := make([]byte, size)
 			_, err = io.ReadFull(stream, payload)
 			if err != nil {
@@ -118,7 +115,7 @@ func readDemuxedLogs(ctx context.Context, stream io.Reader, container Container,
 
 			out <- LogEvent{
 				ContainerId:   container.Id,
-				ContainerName: container.Names[0],
+				ContainerName: container.Names[0][1:],
 				TimeStamp:     time.Now().Format("2006-01-02 15:04:05"),
 				LogLine:       string(payload),
 				SourceStream:  streamType,
@@ -128,7 +125,7 @@ func readDemuxedLogs(ctx context.Context, stream io.Reader, container Container,
 }
 
 // returns a string representation of the stream type
-func getStreamType(streamType byte) string {
+func getLogStreamType(streamType byte) string {
 	switch streamType {
 	case 1:
 		return "stdout"
@@ -140,7 +137,7 @@ func getStreamType(streamType byte) string {
 }
 
 // returns a list of running containers, with their ID and names
-func listContainers() []Container {
+func listActiveContainers() []Container {
 	cli := getDockerClient()
 	defer cli.Close()
 

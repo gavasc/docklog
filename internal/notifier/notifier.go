@@ -8,7 +8,7 @@ import (
 )
 
 // sends the error notification to a Telegram ID
-func Notify(container string, timestamp string, logStream string, logStr string) {
+func NotifyTelegram(container string, timestamp string, logStream string, logStr string) {
 	botToken := os.Getenv("TELEGRAM_BOT_TOKEN")
 	chatId := os.Getenv("TELEGRAM_CHAT_ID")
 

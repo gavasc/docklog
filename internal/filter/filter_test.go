@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestIsError(t *testing.T) {
+func TestIsErrorLog(t *testing.T) {
 	testCases := []struct {
 		name      string
 		log       string
@@ -25,47 +25,47 @@ func TestIsError(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			result := filter.IsError(tc.log, tc.logStream)
+			result := filter.IsErrorLog(tc.log, tc.logStream)
 			if result != tc.expected {
-				t.Errorf("IsError(%q, %q) = %v; expected %v",
+				t.Errorf("IsErrorLog(%q, %q) = %v; expected %v",
 					tc.log, tc.logStream, result, tc.expected)
 			}
 		})
 	}
 }
 
-func TestIsError_StderrAlwaysError(t *testing.T) {
-	result := filter.IsError("normal application log", "stderr")
+func TestIsErrorLog_StderrAlwaysError(t *testing.T) {
+	result := filter.IsErrorLog("normal application log", "stderr")
 	if !result {
 		t.Error("stderr logs should always be considered errors")
 	}
 }
 
-func TestIsError_ErrorKeywords(t *testing.T) {
+func TestIsErrorLog_ErrorKeywords(t *testing.T) {
 	errorKeywords := []string{"error", "fail", "exception", "fatal", "failed", "problem"}
 
 	for _, keyword := range errorKeywords {
 		log := "Something " + keyword + " happened"
-		result := filter.IsError(log, "stdout")
+		result := filter.IsErrorLog(log, "stdout")
 		if !result {
 			t.Errorf("Should detect %q as error keyword in log: %q", keyword, log)
 		}
 	}
 }
 
-func TestIsError_CaseInsensitive(t *testing.T) {
+func TestIsErrorLog_CaseInsensitive(t *testing.T) {
 	testCases := []string{"ERROR", "Error", "error", "eRrOr"}
 
 	for _, errorWord := range testCases {
 		log := "Something " + errorWord + " happened"
-		result := filter.IsError(log, "stdout")
+		result := filter.IsErrorLog(log, "stdout")
 		if !result {
 			t.Errorf("Should detect error regardless of case: %q", log)
 		}
 	}
 }
 
-func TestIsError_NoFalsePositives(t *testing.T) {
+func TestIsErrorLog_NoFalsePositives(t *testing.T) {
 	normalLogs := []string{
 		"Application started successfully",
 		"Processing 1000 records",
@@ -75,14 +75,14 @@ func TestIsError_NoFalsePositives(t *testing.T) {
 	}
 
 	for _, log := range normalLogs {
-		result := filter.IsError(log, "stdout")
+		result := filter.IsErrorLog(log, "stdout")
 		if result {
 			t.Errorf("Should not detect error in normal log: %q", log)
 		}
 	}
 }
 
-func TestIsError_EdgeCases(t *testing.T) {
+func TestIsErrorLog_EdgeCases(t *testing.T) {
 	testCases := []struct {
 		name      string
 		log       string
@@ -101,9 +101,9 @@ func TestIsError_EdgeCases(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			result := filter.IsError(tc.log, tc.logStream)
+			result := filter.IsErrorLog(tc.log, tc.logStream)
 			if result != tc.expected {
-				t.Errorf("IsError(%q, %q) = %v; expected %v",
+				t.Errorf("IsErrorLog(%q, %q) = %v; expected %v",
 					tc.log, tc.logStream, result, tc.expected)
 			}
 		})
