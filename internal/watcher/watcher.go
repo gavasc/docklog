@@ -32,7 +32,6 @@ func Start() error {
 	defer cancel()
 
 	out := make(chan LogEvent)
-	defer close(out)
 
 	err := watchContainers(ctx, out)
 	if err != nil {
