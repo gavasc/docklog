@@ -4,6 +4,8 @@ A simple Docker log monitor that sends Telegram notifications when errors are de
 ## What it does
 Docklog watches all your running Docker containers and sends you a Telegram message whenever an error is logged. Perfect for monitoring low-usage containers where you want to be notified of issues without constantly checking logs.
 
+‼️ The program is supposed to be run as service for now
+
 ## Features
 
 - 🐳 Monitors all running Docker containers automatically
@@ -43,20 +45,11 @@ sudo mv docklog /usr/local/bin/
 2. Visit `https://api.telegram.org/bot<YOUR_BOT_TOKEN>/getUpdates`
 3. Look for your chat ID in the response
 
-**3. Set environment variables**
-```bash
-export TELEGRAM_BOT_TOKEN="your_bot_token_here"
-export TELEGRAM_CHAT_ID="your_chat_id_here"
-```
-
-## Usage
+<!-- ## Usage
 Simply run the binary:
 ```bash
 docklog
-```
-
-The program will start monitoring all running Docker containers and send notifications to your Telegram chat when errors are 
-detected.
+``` -->
 
 ## Running as a service
 To run docklog as a background service, you can use your system's service manager:
@@ -88,6 +81,9 @@ sudo systemctl daemon-reload
 sudo systemctl enable docklog
 sudo systemctl start docklog
 ```
+
+The program will start monitoring all running Docker containers and send notifications to your Telegram chat when errors are 
+detected.
 
 ## Error detection
 Docklog considers a log line an error if:
