@@ -11,7 +11,8 @@ func main() {
 		log.Fatal("TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID must be set")
 	}
 
-	watcher.Start()
-
-	select {}
+	err := watcher.Start()
+	if err != nil {
+		log.Fatalf("docklog failed: %v", err)
+	}
 }

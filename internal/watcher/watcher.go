@@ -31,6 +31,8 @@ func Start() error {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
+	log.Println("docklog: starting container watchers")
+
 	out := make(chan LogEvent)
 
 	err := watchContainers(ctx, out)
@@ -57,6 +59,7 @@ func watchContainers(ctx context.Context, out chan<- LogEvent) error {
 	defer cli.Close()
 
 	containers := listContainers()
+	log.Printf("docklog: found %d containers\n", len(containers))
 	for _, container := range containers {
 		go func(c Container) {
 			logs, err := cli.ContainerLogs(ctx, container.Id, containertypes.LogsOptions{
@@ -65,6 +68,7 @@ func watchContainers(ctx context.Context, out chan<- LogEvent) error {
 				Follow:     true,
 				Since:      "0s",
 			})
+			log.Printf("docklog: watching container %s\n", c.Names[0])
 			if err != nil {
 				log.Printf("failed to get logs for container %s: %v", c.Id, err)
 				return
@@ -76,6 +80,7 @@ func watchContainers(ctx context.Context, out chan<- LogEvent) error {
 			if err != nil {
 				log.Printf("failed to read logs for container %s: %v", name, err)
 			}
+			log.Printf("docklog: finished reading logs for container %s\n", name)
 		}(container)
 	}
 
