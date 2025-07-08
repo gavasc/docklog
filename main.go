@@ -12,4 +12,6 @@ func main() {
 	}
 
 	watcher.Start()
+
+	select {}
 }
