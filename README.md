@@ -13,7 +13,12 @@ Docklog watches all your running Docker containers and sends you a Telegram mess
 - 📦 Single binary, no dependencies
 
 ## Installation
-### Download the binary
+### Option 1: One-line install (Recommended)
+```bash
+curl -fsSL https://raw.githubusercontent.com/yourusername/docklog/main/install.sh | bash
+```
+
+### Option 2: Download the binary
 Go to the releases page and download the binary for your operating system.
 Extract and install:
 ```bash
