@@ -8,7 +8,7 @@ import (
 func IsError(log string, logStream string) bool {
 	lowerLog := strings.ToLower(log)
 
-	if logStream == "stderr" || strings.Contains(lowerLog, "error") || strings.Contains(lowerLog, "fail") || strings.Contains(lowerLog, "exception") || strings.Contains(lowerLog, "fatal") {
+	if logStream == "stderr" || strings.Contains(lowerLog, "error") || strings.Contains(lowerLog, "fail") || strings.Contains(lowerLog, "exception") || strings.Contains(lowerLog, "fatal") || strings.Contains(lowerLog, "failed") || strings.Contains(lowerLog, "problem") {
 		return true
 	}
 
