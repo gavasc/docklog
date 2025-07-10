@@ -16,6 +16,10 @@ type Config struct {
 		Discord struct {
 			WebhookUrl string `json:"webhook_url"`
 		} `json:"discord"`
+
+		Slack struct {
+			WebhookUrl string `json:"webhook_url"`
+		} `json:"slack"`
 	} `json:"notifiers"`
 }
 
@@ -45,7 +49,7 @@ func CheckTokens() {
 	config := loadConfig()
 
 	// checking if all the tokens are empty
-	if config.Notifiers.Telegram.BotToken == "" && config.Notifiers.Telegram.ChatId == "" && config.Notifiers.Discord.WebhookUrl == "" {
+	if config.Notifiers.Telegram.BotToken == "" && config.Notifiers.Telegram.ChatId == "" && config.Notifiers.Discord.WebhookUrl == "" && config.Notifiers.Slack.WebhookUrl == "" {
 		log.Fatal("No tokens found in config file!")
 	}
 
@@ -64,6 +68,10 @@ func setTokens() {
 	if config.Notifiers.Discord.WebhookUrl != "" {
 		os.Setenv("DISCORD_WEBHOOK_URL", config.Notifiers.Discord.WebhookUrl)
 	}
+
+	if config.Notifiers.Slack.WebhookUrl != "" {
+		os.Setenv("SLACK_WEBHOOK_URL", config.Notifiers.Slack.WebhookUrl)
+	}
 }
 
 // sees which notifiers are present and returns their names
@@ -77,6 +85,10 @@ func GetNotifiers() []string {
 
 	if config.Notifiers.Discord.WebhookUrl != "" {
 		present = append(present, "discord")
+	}
+
+	if config.Notifiers.Slack.WebhookUrl != "" {
+		present = append(present, "slack")
 	}
 
 	return present
