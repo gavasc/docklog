@@ -81,6 +81,16 @@ if [ "$OS" != "Windows" ]; then
     chmod +x "$INSTALL_DIR/$BINARY_NAME"
 fi
 
+# Create config file
+echo "Creating config file...""
+mkdir -p "$HOME/.config/docklog"
+if [ ! -f "$HOME/.config/docklog/config.json" ]; then
+    touch "$HOME/.config/docklog/config.json"
+    echo "Config file created in $HOME/.config/docklog/config.json"
+else
+    echo "Config file already exists in $HOME/.config/docklog/config.json"
+fi
+
 # Cleanup
 cd /
 rm -rf "$TMP_DIR"
