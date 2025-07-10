@@ -82,7 +82,7 @@ if [ "$OS" != "Windows" ]; then
 fi
 
 # Create config file
-echo "Creating config file...""
+echo "Creating config file..."
 mkdir -p "$HOME/.config/docklog"
 if [ ! -f "$HOME/.config/docklog/config.json" ]; then
     touch "$HOME/.config/docklog/config.json"
@@ -97,7 +97,3 @@ rm -rf "$TMP_DIR"
 
 echo "Docklog installed successfully!"
 echo "Run 'docklog' to start monitoring your Docker containers."
-echo ""
-echo "Don't forget to set your environment variables:"
-echo "export TELEGRAM_BOT_TOKEN=\"your_bot_token_here\""
-echo "export TELEGRAM_CHAT_ID=\"your_chat_id_here\""
