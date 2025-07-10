@@ -19,5 +19,5 @@ func IsErrorLog(logStr string, logStream string) bool {
 
 // returns true if the event is a container start or restart
 func IsContainerAction(eventType events.Type, action events.Action) bool {
-	return eventType == "container" && (action == "start" || action == "restart")
+	return eventType == "container" && action == "start"
 }
