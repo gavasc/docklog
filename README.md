@@ -7,7 +7,7 @@ Docklog watches all your running Docker containers and sends you a Telegram mess
 ## Features
 
 - 🐳 Monitors all running Docker containers automatically
-- 📱 Sends notifications via Telegram
+- 📱 Sends notifications via Telegram, Discord or both
 - 🔍 Detects errors in both stdout and stderr streams
 - ⬆️ Detects when containers are started, restarted or when they stop and acts accordingly
 - 🚀 Lightweight and easy to set up
