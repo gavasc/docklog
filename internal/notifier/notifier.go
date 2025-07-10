@@ -24,6 +24,10 @@ func Notify(container string, timestamp string, logStream string, logStr string)
 	if slices.Contains(notifiers, "discord") {
 		NotifyDiscord(message)
 	}
+
+	if slices.Contains(notifiers, "slack") {
+		NotifySlack(message)
+	}
 }
 
 // sends the error notification to a Telegram ID
@@ -50,11 +54,30 @@ func NotifyDiscord(message string) {
 
 	jsonBody, err := json.Marshal(body)
 	if err != nil {
-		log.Print("failed to marshal body: ", err)
+		log.Print("failed to marshal discord body: ", err)
 	}
 
 	_, err = http.Post(webhookUrl, "application/json", bytes.NewBuffer(jsonBody))
 	if err != nil {
-		log.Print("failed to post to webhook: ", err)
+		log.Print("failed to post to discord webhook: ", err)
+	}
+}
+
+// sends the error notification to a Slack webhook
+func NotifySlack(message string) {
+	webhookUrl := os.Getenv("SLACK_WEBHOOK_URL")
+
+	body := map[string]string{
+		"text": message,
+	}
+
+	jsonBody, err := json.Marshal(body)
+	if err != nil {
+		log.Print("failed to marshal slack body: ", err)
+	}
+
+	_, err = http.Post(webhookUrl, "application/json", bytes.NewBuffer(jsonBody))
+	if err != nil {
+		log.Print("failed to post to slack webhook: ", err)
 	}
 }

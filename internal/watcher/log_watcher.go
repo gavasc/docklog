@@ -115,7 +115,7 @@ func readDemuxedLogs(ctx context.Context, stream io.Reader, container Container,
 
 			out <- LogEvent{
 				ContainerId:   container.Id,
-				ContainerName: container.Names[0][1:],
+				ContainerName: container.Names[0],
 				TimeStamp:     time.Now().Format("2006-01-02 15:04:05"),
 				LogLine:       string(payload),
 				SourceStream:  streamType,
