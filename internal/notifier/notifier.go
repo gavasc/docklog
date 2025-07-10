@@ -1,21 +1,35 @@
 package notifier
 
 import (
+	"bytes"
+	"docklog/config"
+	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"net/url"
 	"os"
+	"slices"
 )
 
-// sends the error notification to a Telegram ID
-func NotifyTelegram(container string, timestamp string, logStream string, logStr string) {
-	botToken := os.Getenv("TELEGRAM_BOT_TOKEN")
-	chatId := os.Getenv("TELEGRAM_CHAT_ID")
-
+func Notify(container string, timestamp string, logStream string, logStr string) {
 	str := `Error in container %s at %s
 [%s] %s`
-
 	message := fmt.Sprintf(str, container, timestamp, logStream, logStr)
+
+	notifiers := config.GetNotifiers()
+	if slices.Contains(notifiers, "telegram") {
+		NotifyTelegram(message)
+	}
+	if slices.Contains(notifiers, "discord") {
+		NotifyDiscord(message)
+	}
+}
+
+// sends the error notification to a Telegram ID
+func NotifyTelegram(message string) {
+	botToken := os.Getenv("TELEGRAM_BOT_TOKEN")
+	chatId := os.Getenv("TELEGRAM_CHAT_ID")
 
 	url := fmt.Sprintf("https://api.telegram.org/bot%s/sendMessage?chat_id=%s&text=%s",
 		botToken, chatId, url.QueryEscape(message))
@@ -23,5 +37,24 @@ func NotifyTelegram(container string, timestamp string, logStream string, logStr
 	_, err := http.Get(url)
 	if err != nil {
 		fmt.Println(err)
+	}
+}
+
+// sends the error notification to a Discord webhook
+func NotifyDiscord(message string) {
+	webhookUrl := os.Getenv("DISCORD_WEBHOOK_URL")
+
+	body := map[string]string{
+		"content": message,
+	}
+
+	jsonBody, err := json.Marshal(body)
+	if err != nil {
+		log.Print("failed to marshal body: ", err)
+	}
+
+	_, err = http.Post(webhookUrl, "application/json", bytes.NewBuffer(jsonBody))
+	if err != nil {
+		log.Print("failed to post to webhook: ", err)
 	}
 }

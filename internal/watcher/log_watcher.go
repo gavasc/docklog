@@ -47,7 +47,7 @@ func logWatcher(e <-chan Container, ctx context.Context) {
 		case ev := <-out:
 			if filter.IsErrorLog(ev.LogLine, ev.SourceStream) {
 				log.Printf("detected error in container [%s]: %s", ev.ContainerName, ev.LogLine)
-				notifier.NotifyTelegram(ev.ContainerName, ev.TimeStamp, ev.SourceStream, ev.LogLine)
+				notifier.Notify(ev.ContainerName, ev.TimeStamp, ev.SourceStream, ev.LogLine)
 			}
 		// receives new containers to watch, from start and restart events
 		case container := <-e:
