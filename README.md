@@ -32,17 +32,23 @@ sudo mv docklog /usr/local/bin/
 ```
 
 ## Setup
-**1. Create a Telegram Bot**
+Docklog supports sending notifications through Telegram and Discord. You can choose one of them or both.
+The Discord notifier uses a simple webhook, you can acquire one by going to the channel you want the messages sent to, click on the configurations cog -> Integrations -> Webhooks
+When you install Docklog a config file is created at $HOME/.config/docklog/config.json, use the following pattern to configure your notifiers:
 
-1. Message @BotFather on Telegram
-2. Create a new bot with `/newbot`
-3. Save the bot token
-
-**2. Get your Chat ID**
-
-1. Message your bot
-2. Visit `https://api.telegram.org/bot<YOUR_BOT_TOKEN>/getUpdates`
-3. Look for your chat ID in the response
+```json
+{
+  "notifiers": {
+        "telegram": {
+            "bot_token": "",
+            "chat_id": ""
+        },
+        "discord": {
+            "webhook_url": ""
+        }
+  }
+}
+```
 
 ## Usage
 Simply run the binary:
@@ -69,8 +75,6 @@ User=root
 ExecStart=/usr/local/bin/docklog
 Restart=always
 RestartSec=5
-Environment=TELEGRAM_BOT_TOKEN=your_bot_token_here
-Environment=TELEGRAM_CHAT_ID=your_chat_id_here
 
 [Install]
 WantedBy=multi-user.target
