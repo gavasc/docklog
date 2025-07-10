@@ -7,7 +7,7 @@ Docklog watches all your running Docker containers and sends you a Telegram mess
 ## Features
 
 - 🐳 Monitors all running Docker containers automatically
-- 📱 Sends notifications via Telegram, Discord or both
+- 📱 Sends notifications via Telegram, Discord, Slack or all of them
 - 🔍 Detects errors in both stdout and stderr streams
 - ⬆️ Detects when containers are started, restarted or when they stop and acts accordingly
 - 🚀 Lightweight and easy to set up
@@ -36,6 +36,8 @@ Docklog supports sending notifications through Telegram and Discord. You can cho
 
 The Discord notifier uses a simple webhook, you can acquire one by going to the channel you want the messages sent to, click on the configurations cog -> Integrations -> Webhooks
 
+The slack notifier also uses a simple webhook, you can see [here](https://api.slack.com/messaging/webhooks) how to create one for your channel
+
 When you install Docklog a config file is created at $HOME/.config/docklog/config.json, use the following pattern to configure your notifiers:
 
 ```json
@@ -46,6 +48,9 @@ When you install Docklog a config file is created at $HOME/.config/docklog/confi
             "chat_id": ""
         },
         "discord": {
+            "webhook_url": ""
+        },
+        "slack": {
             "webhook_url": ""
         }
   }
