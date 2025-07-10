@@ -33,7 +33,9 @@ sudo mv docklog /usr/local/bin/
 
 ## Setup
 Docklog supports sending notifications through Telegram and Discord. You can choose one of them or both.
+
 The Discord notifier uses a simple webhook, you can acquire one by going to the channel you want the messages sent to, click on the configurations cog -> Integrations -> Webhooks
+
 When you install Docklog a config file is created at $HOME/.config/docklog/config.json, use the following pattern to configure your notifiers:
 
 ```json
