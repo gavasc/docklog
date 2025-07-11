@@ -63,7 +63,7 @@ Simply run the binary:
 docklog
 ```
 
-The program will start monitoring all running Docker containers and send notifications to your Telegram chat when errors are 
+The program will start monitoring all running Docker containers and send notifications to your prefered chats when errors are 
 detected.
 
 ## Running as a service
