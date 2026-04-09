@@ -1,5 +1,5 @@
 # Docklog
-A simple Docker log monitor that sends Telegram notifications when errors are detected in your container logs.
+A simple Docker log monitor that sends notifications when errors are detected in your container logs.
 
 ## What it does
 Docklog watches all your running Docker containers and sends you a Telegram message whenever an error is logged. Perfect for monitoring low-usage containers where you want to be notified of issues without constantly checking logs.
