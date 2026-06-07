@@ -17,7 +17,7 @@ func main() {
 	} else if os.Args[1] == "config" {
 		editor := os.Getenv("EDITOR")
 		if editor == "" {
-			editor = "nvim" // fallback default
+			editor = "vi" // fallback default
 		}
 
 		cmd := exec.Command(editor, "$HOME/.config/docklog/config.json")
